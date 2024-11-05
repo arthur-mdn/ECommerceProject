@@ -46,10 +46,11 @@ services:
       MYSQL_PASSWORD: ${DB_PASSWORD}
       MYSQL_DATABASE: ${DB_NAME}
     healthcheck:
-      test: ["CMD-SHELL", "mysql -u root ${DB_NAME} -e 'SELECT 1'"]
-      timeout: 5s
-      retries: 3
-      start_period: 10s
+      test: [ "CMD-SHELL", "mysql -u root -p${DB_ROOT_PASSWORD} -e 'SELECT 1'" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
     networks:
       - user-network
 
