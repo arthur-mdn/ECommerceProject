@@ -1,40 +1,62 @@
 services:
-  server:
-    build: ./server
+  api-gateway:
+    build:
+      context: ./api-gateway
+      dockerfile: ./Dockerfile
+    container_name: api-gateway
     ports:
-      - "${SERVER_PORT}:${SERVER_PORT}"
+      - "${API_GATEWAY_PORT}:${API_GATEWAY_PORT}"
     volumes:
-      - ./server:/app
-    depends_on:
-      - db
+      - ./api-gateway:/app
+    restart: always
+    networks:
+      - api-network
     env_file:
       - .env
 
-  client:
+  user-service:
     build:
-      context: ./client
+      context: ./user-service
       dockerfile: ./Dockerfile
-    restart: always
-    ports:
-      - "${CLIENT_PORT}:${CLIENT_PORT}"
-    volumes:
-      - ./client:/app
-      - /app/node_modules
+    container_name: user-service
     depends_on:
-      - server
+      - db
+    ports:
+      - "${USER_SERVICE_PORT}:${USER_SERVICE_PORT}"
+    volumes:
+      - ./user-service:/app
+    restart: always
+    networks:
+      - user-network
+      - api-network
     env_file:
       - .env
 
   db:
-    image: postgres:13
-    environment:
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: ${DB_NAME}
+    image: mysql:8.0
+    restart: always
     ports:
-        - "${DB_PORT}:${DB_PORT}"
+      - "${DB_PORT}:${DB_PORT}"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - db-data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+    healthcheck:
+      test: [ "CMD-SHELL", "mysql -u root -p${DB_ROOT_PASSWORD} -e 'SELECT 1'" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    networks:
+      - user-network
+
+networks:
+  api-network:
+    name: api-network
+  user-network:
 
 volumes:
-    postgres_data:
+  db-data:
