@@ -18,6 +18,8 @@ services:
     volumes:
       - ./client:/app
       - /app/node_modules
+    depends_on:
+      - server
 
   db:
     image: postgres:13
