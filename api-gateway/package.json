@@ -5,8 +5,8 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "./node_modules/nodemon/bin/nodemon.js ./src",
-    "dev": "nodemon ./src/index.js",
+    "start": "npx nodemon ./src",
+    "dev": "npx nodemon ./src",
     "lint": "eslint ./src"
   },
   "author": "Tony BLARD",
