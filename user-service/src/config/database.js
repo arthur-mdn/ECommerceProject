@@ -1,14 +1,17 @@
+import dotenv from 'dotenv';
 import { Sequelize } from "sequelize";
 
+dotenv.config();
+
 export const database = new Sequelize(
-    'user-service',
-    'root',
-    '',
+    process.env.DB_NAME,
+    process.env.DB_USER,
+    process.env.DB_PASSWORD,
     {
-        host: 'user-db',
+        host: 'db',
         dialect: 'mysql',
         logging: false,
-        port: 3306
+        port: process.env.DB_PORT
     }
 );
 
@@ -18,6 +21,6 @@ export const tryConnectDatabase = async () => {
         await database.sync();
         console.log('Database is up');
     } catch (error) {
-        console.log(error)
+        console.log(error);
     }
 };

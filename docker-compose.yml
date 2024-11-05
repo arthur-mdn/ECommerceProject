@@ -20,8 +20,7 @@ services:
       dockerfile: ./Dockerfile
     container_name: user-service
     depends_on:
-      db:
-        condition: service_healthy
+      - db
     ports:
       - "${USER_SERVICE_PORT}:${USER_SERVICE_PORT}"
     volumes:

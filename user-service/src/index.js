@@ -1,5 +1,8 @@
+import dotenv from 'dotenv';
 import express from 'express';
 import { tryConnectDatabase } from './config/database.js';
+
+dotenv.config();
 
 const app = express();
 
@@ -17,8 +20,8 @@ app.get('/', (req, res) => {
         }
     ]);
 });
-
-app.listen(3001, () => {
+console.log(process.env.USER_SERVICE_PORT)
+app.listen(process.env.USER_SERVICE_PORT, () => {
     tryConnectDatabase();
     console.log("User service");
 });
