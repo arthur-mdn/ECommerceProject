@@ -20,7 +20,7 @@ app.get('/', (req, res) => {
         }
     ]);
 });
-console.log(process.env.USER_SERVICE_PORT)
+
 app.listen(process.env.USER_SERVICE_PORT, () => {
     tryConnectDatabase();
     console.log("User service");
