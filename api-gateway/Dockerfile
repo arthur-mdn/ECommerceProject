@@ -7,4 +7,3 @@ COPY . .
 RUN npm install -y
 
 CMD ["npm", "run", "dev"]
-
