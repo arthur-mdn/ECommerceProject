@@ -21,6 +21,15 @@ app.get('/', (req, res) => {
     ]);
 });
 
+app.post('/register', (req, res) => {
+    res.json({
+        id: 3,
+        name: "John Doe",
+        email: "a@a.a",
+        password: "123456"
+    });
+})
+
 app.listen(process.env.USER_SERVICE_PORT, () => {
     tryConnectDatabase();
     console.log("User service");

@@ -9,6 +9,7 @@ services:
     volumes:
       - ./api-gateway:/app
       - /app/node_modules
+      - ./models:/app/src/models
     restart: always
     networks:
       - api-network
@@ -27,6 +28,7 @@ services:
     volumes:
       - ./user-service:/app
       - /app/node_modules
+      - ./models:/app/src/models
     restart: always
     networks:
       - user-network
