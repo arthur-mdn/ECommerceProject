@@ -1,6 +1,6 @@
 // user-service/src/models/user.model.js
-const defineUserModel = (sequelize, Sequelize) => {
-    const User = sequelize.define('User', {
+export const defineUserModel = (sequelize, Sequelize) => {
+    return sequelize.define('User', {
         firstName: {
             type: Sequelize.STRING,
             allowNull: false
@@ -23,7 +23,4 @@ const defineUserModel = (sequelize, Sequelize) => {
             defaultValue: ['ROLE_CLIENT']
         }
     });
-    return User;
 };
-
-export { defineUserModel };

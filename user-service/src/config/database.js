@@ -1,7 +1,8 @@
 // user-service/src/config/database.js
 import dotenv from 'dotenv';
 import { Sequelize } from "sequelize";
-import { defineUserModel } from '../models/user.model.js';
+import { initializeModels } from '../models/index.js';
+import bcrypt from 'bcrypt';
 
 dotenv.config();
 
@@ -17,24 +18,40 @@ export const database = new Sequelize(
     }
 );
 
-const User = defineUserModel(database, Sequelize);
+export const models = initializeModels(database, Sequelize);
 
 export const tryConnectDatabase = async () => {
     try {
-        await database.authenticate(); 
-        await database.sync();
+        await database.authenticate();
         console.log('Database is up');
     } catch (error) {
-        console.log(error);
+        console.error('Database connection failed:', error);
     }
 };
 
-export const createUser = async (name, email) => {
+export const initDatabase = async () => {
     try {
-        const user = await User.create({ name, email });
-        return user;
+        const { User } = models;
+
+        const adminPayload = {
+            firstName: 'John',
+            lastName: 'Doe',
+            email: 'john.doe@gmail.com',
+            password: 'poisson',
+            role: ['ROLE_ADMIN', 'ROLE_CLIENT']
+        };
+
+        const existingAdmin = await User.findOne({ where: { email: adminPayload.email } });
+        if (!existingAdmin) {
+            const hashedPassword = await bcrypt.hash(adminPayload.password, 10);
+            await User.create({ ...adminPayload, password: hashedPassword });
+            console.log('Admin user created.');
+        }
     } catch (error) {
-        console.log(error);
-        return null;
+        console.error('Error initializing database:', error);
     }
 };
+
+export const sync = async () => {
+    database.sync({alter: true});
+}
