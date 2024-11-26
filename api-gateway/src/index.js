@@ -8,7 +8,10 @@ const app = express();
 
 app.use('/users', createProxyMiddleware({
     target: `${process.env.USER_SERVICE_URL}:${process.env.USER_SERVICE_PORT}`,
-    changeOrigin: true
+    changeOrigin: true,
+    pathRewrite: {
+        '^/users': '/',
+    },
 }));
 
 app.listen(process.env.API_GATEWAY_PORT, () => {
